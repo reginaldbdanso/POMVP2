@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -8,6 +8,7 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const { login } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -15,7 +16,9 @@ export default function LoginPage() {
     
     try {
       await login(email, password);
-      navigate('/dashboard');
+      // Redirect to the page they tried to visit or default to purchase orders
+      const from = location.state?.from?.pathname || '/purchase-orders';
+      navigate(from, { replace: true });
     } catch (err) {
       setError(err.message);
     }

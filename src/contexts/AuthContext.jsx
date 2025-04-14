@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { login as apiLogin } from '../services/api';
 
 export const AuthContext = createContext();
 
@@ -18,25 +19,14 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      const response = await fetch('/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
-      });
-
-      const data = await response.json();
-      
-      if (response.ok) {
-        localStorage.setItem('token', data.token);
-        setToken(data.token);
-        setUser(data.user);
-        navigate('/dashboard');
-      } else {
-        throw new Error(data.message || 'Login failed');
-      }
+      const data = await apiLogin(email, password);
+      localStorage.setItem('token', data.token);
+      setToken(data.token);
+      setUser(data.user);
+      navigate('/dashboard');
     } catch (error) {
       console.error('Login error:', error);
-      throw error;
+      throw new Error(error.response?.data?.message || 'Login failed');
     }
   };
 
