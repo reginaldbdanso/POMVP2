@@ -6,6 +6,18 @@ import LoginPage from './pages/LoginPage'
 import PurchaseOrdersPage from './pages/PurchaseOrdersPage'
 import PurchaseOrderForm from './components/PurchaseOrderForm'
 import PurchaseOrderDetail from './components/PurchaseOrderDetail'
+import { useAuth } from './hooks/useAuth'
+
+// Add new component for public route protection
+function PublicRoute({ children }) {
+  const { token } = useAuth();
+  
+  if (token) {
+    return <Navigate to="/purchase-orders" replace />;
+  }
+  
+  return children;
+}
 
 function PrivateWrapper({ children, requiredRole }) {
   return (
@@ -20,7 +32,14 @@ function App() {
     <Router>
       <AuthProvider>
         <Routes>
-          <Route path="/login" element={<LoginPage />} />
+          <Route 
+            path="/login" 
+            element={
+              <PublicRoute>
+                <LoginPage />
+              </PublicRoute>
+            } 
+          />
           <Route
             path="/purchase-orders"
             element={

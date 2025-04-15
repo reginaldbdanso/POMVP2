@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
 import { getPurchaseOrders } from '../services/api';
 import LoadingSpinner from '../components/LoadingSpinner';
 import EmptyState from '../components/EmptyState';
 import { ExclamationTriangleIcon, DocumentPlusIcon, ArrowPathIcon } from '@heroicons/react/24/outline';
 
 export default function PurchaseOrdersPage() {
+  const { logout } = useAuth();
   const [purchaseOrders, setPurchaseOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -17,10 +19,16 @@ export default function PurchaseOrdersPage() {
 
   const fetchPurchaseOrders = async () => {
     try {
+      setLoading(true);
+      setError('');
       const data = await getPurchaseOrders();
       setPurchaseOrders(data);
     } catch (error) {
-      setError(error.response?.data?.message || 'Failed to fetch purchase orders');
+      if (error.code === 'ECONNREFUSED') {
+        setError('Unable to connect to the server. Please make sure the backend server is running.');
+      } else {
+        setError(error.response?.data?.message || 'Failed to fetch purchase orders');
+      }
     } finally {
       setLoading(false);
     }
@@ -67,6 +75,15 @@ export default function PurchaseOrdersPage() {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="bg-white rounded-lg shadow px-5 py-6 sm:px-6">
+        <button
+            onClick={logout}
+            className="inline-flex items-center justify-center px-4 py-2 border 
+              border-gray-300 shadow-sm text-sm font-medium rounded-md 
+              text-gray-700 bg-white hover:bg-gray-50 
+              focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          >
+            Logout
+          </button>
           <EmptyState
             title="Unable to load purchase orders"
             description="There was an error loading your purchase orders. This might be due to a connection issue or server problem."
@@ -83,6 +100,15 @@ export default function PurchaseOrdersPage() {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="bg-white rounded-lg shadow px-5 py-6 sm:px-6">
+        <button
+            onClick={logout}
+            className="inline-flex items-center justify-center px-4 py-2 border 
+              border-gray-300 shadow-sm text-sm font-medium rounded-md 
+              text-gray-700 bg-white hover:bg-gray-50 
+              focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          >
+            Logout
+          </button>
           <EmptyState
             title="No purchase orders"
             description="Get started by creating your first purchase order."
@@ -104,7 +130,16 @@ export default function PurchaseOrdersPage() {
             A list of all purchase orders in your account.
           </p>
         </div>
-        <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
+        <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none flex items-center gap-4">
+          <button
+            onClick={logout}
+            className="inline-flex items-center justify-center px-4 py-2 border 
+              border-gray-300 shadow-sm text-sm font-medium rounded-md 
+              text-gray-700 bg-white hover:bg-gray-50 
+              focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          >
+            Logout
+          </button>
           <button
             onClick={() => navigate('/purchase-orders/new')}
             className="inline-flex items-center justify-center px-4 py-2 border 

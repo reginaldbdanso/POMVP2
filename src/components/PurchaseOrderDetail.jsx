@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../hooks/useAuth';
 import { getPurchaseOrderById, approvePurchaseOrder } from '../services/api';
 import LoadingSpinner from './LoadingSpinner';
 import ErrorAlert from './ErrorAlert';

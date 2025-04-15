@@ -1,5 +1,5 @@
 import { Navigate, useLocation } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../hooks/useAuth';
 
 export default function PrivateRoute({ children, requiredRole }) {
   const { user, token } = useAuth();
@@ -7,6 +7,7 @@ export default function PrivateRoute({ children, requiredRole }) {
 
   if (!token) {
     // Redirect to login if not authenticated
+    console.log("No token, redirecting to login")
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
